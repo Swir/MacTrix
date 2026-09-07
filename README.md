@@ -2,31 +2,46 @@
 
 # 🖧 MacTrix — MAC Address Generator
 
-**Desktop MAC-address generator by Swir**  
-**Desktopowy generator adresów MAC autorstwa Swir**
+### Desktop Batch MAC Address Generator with Save, Load & Sort
+
+**Python • Tkinter • ttkthemes • Batch Generation • File Export**
 
 ![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
 ![Tkinter](https://img.shields.io/badge/GUI-Tkinter-2ea44f)
 ![Theme](https://img.shields.io/badge/Theme-ttkthemes-8A2BE2)
+![Use](https://img.shields.io/badge/Use-Test%20Data%20%7C%20Lab-success)
 
 </div>
 
 ---
 
-## 🇵🇱 Polski
+## 🚀 About
 
-MacTrix to prosta aplikacja graficzna do generowania przykładowych adresów MAC. Program pozwala określić liczbę adresów i typ urządzenia, a następnie wyświetla wygenerowane wyniki w czytelnej liście.
+**MacTrix** is a lightweight desktop utility for generating sample MAC addresses in batches. Choose the number of addresses and a device category, then review, sort, save or reload the generated values from a Tkinter interface.
 
-### ✨ Funkcje
-- generowanie wielu adresów MAC
-- gotowe prefiksy dla komputera, telefonu, routera i innych urządzeń
-- pasek postępu generowania
-- lista wyników z przewijaniem
-- zapisywanie wyników do pliku
-- wczytywanie adresów z pliku
-- sortowanie listy
+It is useful for creating sample/test data, lab exercises and UI or network-tool development where synthetic MAC-like values are needed.
 
-### 🚀 Instalacja
+It is designed for users searching for a **MAC address generator**, **Python MAC generator**, **Tkinter network utility**, **batch MAC generator** or a small desktop tool for producing test addresses.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---|---|
+| 🔢 Batch generation | Generate multiple addresses at once |
+| 🖥️ Device categories | Predefined prefixes for several device types |
+| 📊 Progress display | Visual generation progress |
+| 📜 Scrollable list | Review generated results |
+| 💾 Save | Export addresses to a file |
+| 📂 Load | Import previously saved address lists |
+| ↕️ Sort | Sort the generated entries |
+| 🎨 Themed GUI | Tkinter + ttkthemes desktop interface |
+
+---
+
+## 📦 Installation
+
 ```bash
 git clone https://github.com/Swir/MacTrix.git
 cd MacTrix
@@ -34,34 +49,28 @@ pip install ttkthemes
 python base.py
 ```
 
-> Generator tworzy przykładowe adresy na podstawie zdefiniowanych w programie prefiksów. Nie należy traktować tych prefiksów jako aktualnej bazy producentów OUI.
+---
+
+## ⚠️ Prefix Note
+
+The generated addresses use prefixes defined inside the application. They should be treated as sample/test data and not as an authoritative or current IEEE OUI/vendor database.
 
 ---
 
-## 🇬🇧 English
+## 🔍 Discoverability
 
-MacTrix is a small graphical utility for generating sample MAC addresses. Select the number of addresses and a device category, then review the generated values in a scrollable list.
-
-### ✨ Features
-- batch MAC-address generation
-- predefined prefixes for computer, phone, router and other device categories
-- generation progress indicator
-- scrollable results
-- save results to a file
-- load addresses from a file
-- sort generated entries
-
-### 🚀 Installation
-```bash
-git clone https://github.com/Swir/MacTrix.git
-cd MacTrix
-pip install ttkthemes
-python base.py
-```
-
-> Generated addresses use prefixes defined by the application and should not be considered an authoritative or current OUI vendor database.
+`mac address generator` • `python mac generator` • `batch mac address generator` • `tkinter network utility` • `random mac generator gui` • `mac test data generator` • `desktop mac generator`
 
 ---
 
-## 👤 Author / Autor
-Developed by **Swir**.
+## 👨‍💻 Author
+
+Developed by **Swir** — [@Swir](https://github.com/Swir)
+
+<div align="center">
+
+### 🖧 Generate • Sort • Save • Reuse
+
+⭐ **Star the repository if MacTrix helps your testing workflow!**
+
+</div>
