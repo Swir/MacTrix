@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import secrets
+from collections.abc import Callable
 from dataclasses import dataclass
 
 MAX_BATCH = 100_000
+ProgressCallback = Callable[[int, int], None]
 
 
 @dataclass(frozen=True)
@@ -78,6 +80,7 @@ def generate_many(
     custom_prefix: str | None = None,
     separator: str = ":",
     uppercase: bool = True,
+    progress: ProgressCallback | None = None,
 ) -> list[str]:
     if not isinstance(count, int):
         raise TypeError("count must be an integer")
@@ -86,7 +89,15 @@ def generate_many(
 
     prefix = resolve_prefix(profile, custom_prefix)
     results: set[str] = set()
+    report_step = max(1, count // 100)
+    last_reported = 0
+
     while len(results) < count:
         suffix = secrets.token_bytes(3)
         results.add(format_mac((*prefix, *suffix), separator=separator, uppercase=uppercase))
+        done = len(results)
+        if progress and (done == count or done - last_reported >= report_step):
+            progress(done, count)
+            last_reported = done
+
     return list(results)
