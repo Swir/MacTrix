@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mactrix"
+version = "2.0.0"
+description = "Modern desktop generator and validator for synthetic locally administered MAC addresses."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Swir"}]
+keywords = ["mac-address", "generator", "validator", "desktop", "testing"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Operating System :: Microsoft :: Windows",
+]
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8.3,<9"]
+build = ["Pillow>=11,<12", "pyinstaller>=6.15,<7"]
+
+[project.scripts]
+mactrix = "mactrix.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
