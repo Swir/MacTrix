@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MacTrix icon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#0b3154"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#66d6ff"/>
+      <stop offset="1" stop-color="#1479d6"/>
+    </linearGradient>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="20" y="20" width="472" height="472" rx="108" fill="url(#bg)"/>
+  <path d="M76 120H436M76 196H436M76 272H436M76 348H436M120 76V436M196 76V436M272 76V436M348 76V436" stroke="#10395d" stroke-width="4" opacity=".58"/>
+  <circle cx="120" cy="120" r="9" fill="#2aa5ff" opacity=".9"/>
+  <circle cx="196" cy="196" r="7" fill="#66d6ff" opacity=".8"/>
+  <circle cx="348" cy="120" r="7" fill="#2aa5ff" opacity=".7"/>
+  <circle cx="120" cy="348" r="7" fill="#66d6ff" opacity=".65"/>
+  <circle cx="348" cy="348" r="9" fill="#2aa5ff" opacity=".85"/>
+  <path d="M122 352V160c0-22 26-34 43-18l91 88 91-88c17-16 43-4 43 18v192h-52V224l-82 78-82-78v128z" fill="url(#glow)" filter="url(#shadow)"/>
+  <rect x="103" y="389" width="306" height="20" rx="10" fill="#66d6ff" opacity=".9"/>
+</svg>

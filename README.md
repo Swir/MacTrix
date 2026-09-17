@@ -1,76 +1,127 @@
 <div align="center">
 
-# 🖧 MacTrix — MAC Address Generator
+# 🖧 MacTrix 2
 
-### Desktop Batch MAC Address Generator with Save, Load & Sort
+### Modern synthetic MAC-address laboratory for Windows
 
-**Python • Tkinter • ttkthemes • Batch Generation • File Export**
+**Generate • Validate • Import • Export • Test safely**
 
-![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
-![Tkinter](https://img.shields.io/badge/GUI-Tkinter-2ea44f)
-![Theme](https://img.shields.io/badge/Theme-ttkthemes-8A2BE2)
-![Use](https://img.shields.io/badge/Use-Test%20Data%20%7C%20Lab-success)
+[![CI](https://github.com/Swir/MacTrix/actions/workflows/ci.yml/badge.svg)](https://github.com/Swir/MacTrix/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.10--3.14-3776AB?logo=python&logoColor=white)
+![Platform](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows11&logoColor=white)
+![Version](https://img.shields.io/badge/version-2.0.0-2aa5ff)
 
 </div>
 
 ---
 
-## 🚀 About
+## What changed in v2
 
-**MacTrix** is a lightweight desktop utility for generating sample MAC addresses in batches. Choose the number of addresses and a device category, then review, sort, save or reload the generated values from a Tkinter interface.
+MacTrix has been rebuilt from the old single-file Tkinter prototype into a small, tested Python package with a modern dark-blue desktop interface, safe address semantics, multilingual UI, persistent settings and an automated Windows release pipeline.
 
-It is useful for creating sample/test data, lab exercises and UI or network-tool development where synthetic MAC-like values are needed.
+The application **does not change the MAC address of a network adapter**. It creates and validates synthetic values for development, QA, documentation, lab exercises and test datasets.
 
-It is designed for users searching for a **MAC address generator**, **Python MAC generator**, **Tkinter network utility**, **batch MAC generator** or a small desktop tool for producing test addresses.
+## Highlights
 
----
-
-## ✨ Features
-
-| Feature | Description |
+| Feature | MacTrix 2 |
 |---|---|
-| 🔢 Batch generation | Generate multiple addresses at once |
-| 🖥️ Device categories | Predefined prefixes for several device types |
-| 📊 Progress display | Visual generation progress |
-| 📜 Scrollable list | Review generated results |
-| 💾 Save | Export addresses to a file |
-| 📂 Load | Import previously saved address lists |
-| ↕️ Sort | Sort the generated entries |
-| 🎨 Themed GUI | Tkinter + ttkthemes desktop interface |
+| Standards-safe generation | Generated addresses are **locally administered + unicast** |
+| Batch mode | 1 to 100,000 unique values per run |
+| Synthetic profiles | Generic, Desktop, Mobile, Router and IoT namespaces |
+| Custom prefix | Optional 3-byte prefix; local/unicast bits are normalized automatically |
+| Formatting | `:` / `-` / no separator, upper or lower case |
+| Import | TXT, CSV and JSON |
+| Export | TXT, CSV and structured JSON |
+| Validation | Accepts common MAC formats and normalizes them |
+| Large batches | Full data kept for export; UI preview is capped for responsiveness |
+| Languages | English, Polish and Norwegian with system-language detection |
+| Settings | Language, profile, formatting and count are remembered |
+| Diagnostics | Rotating local application log |
+| Releases | Windows EXE + portable ZIP + SHA256 checksums |
+| CI | Python 3.10, 3.11, 3.12, 3.13 and 3.14 + Windows smoke test |
 
----
+## Synthetic profile prefixes
 
-## 📦 Installation
+MacTrix uses private synthetic namespaces rather than pretending that generated values belong to real hardware vendors:
+
+```text
+Generic  02:00:00
+Desktop  02:10:00
+Mobile   02:20:00
+Router   02:30:00
+IoT      02:40:00
+```
+
+The first octet is always normalized so the generated address is locally administered and unicast. These prefixes are **not an IEEE OUI/vendor database**.
+
+## Run from source
 
 ```bash
 git clone https://github.com/Swir/MacTrix.git
 cd MacTrix
-pip install ttkthemes
-python base.py
+python -m pip install -e ".[test]"
+python run.py
 ```
 
----
+Non-GUI self-test:
 
-## ⚠️ Prefix Note
+```bash
+python -m mactrix --smoke-test
+```
 
-The generated addresses use prefixes defined inside the application. They should be treated as sample/test data and not as an authoritative or current IEEE OUI/vendor database.
+Run tests:
 
----
+```bash
+pytest
+```
 
-## 🔍 Discoverability
+## Windows release
 
-`mac address generator` • `python mac generator` • `batch mac address generator` • `tkinter network utility` • `random mac generator gui` • `mac test data generator` • `desktop mac generator`
+Tagged releases are built by GitHub Actions. A validated release contains:
 
----
+```text
+MacTrix.exe
+MacTrix.exe.sha256
+MacTrix-vX.Y.Z-Windows-x64.zip
+MacTrix-vX.Y.Z-Windows-x64.zip.sha256
+```
 
-## 👨‍💻 Author
+The packaged executable runs the same non-GUI smoke test before a release is published.
 
-Developed by **Swir** — [@Swir](https://github.com/Swir)
+## Project layout
+
+```text
+MacTrix/
+├─ assets/
+│  └─ mactrix_icon.svg
+├─ src/mactrix/
+│  ├─ app.py
+│  ├─ config.py
+│  ├─ generator.py
+│  ├─ i18n.py
+│  ├─ logging_config.py
+│  ├─ storage.py
+│  └─ validation.py
+├─ tests/
+├─ tools/build_icon.py
+├─ run.py
+└─ pyproject.toml
+```
+
+## Data and privacy
+
+MacTrix works locally. It does not need an online API, does not query vendor databases and does not transmit generated or imported address lists. User preferences and rotating logs are stored in the normal per-user application/configuration directory.
+
+## Responsible use
+
+Use MacTrix for your own development, testing, documentation and authorized lab environments. The project intentionally focuses on generation and validation of synthetic data; it does not include adapter spoofing, network impersonation or bypass functionality.
+
+## Author
+
+Developed by **Swir** — [github.com/Swir](https://github.com/Swir)
 
 <div align="center">
 
-### 🖧 Generate • Sort • Save • Reuse
-
-⭐ **Star the repository if MacTrix helps your testing workflow!**
+**MacTrix 2 — clean test data without pretending to be real hardware.**
 
 </div>

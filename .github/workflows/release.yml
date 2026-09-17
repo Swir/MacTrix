@@ -1,0 +1,68 @@
+name: Windows Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Optional tag override (default: project version)"
+        required: false
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[release]')
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[test,build]"
+      - name: Test
+        run: pytest
+      - name: Build icon
+        run: python tools/build_icon.py
+      - name: Resolve version
+        shell: pwsh
+        run: |
+          $v = python -c "import tomllib; print('v'+tomllib.load(open('pyproject.toml','rb'))['project']['version'])"
+          if ('${{ github.event_name }}' -eq 'workflow_dispatch' -and '${{ inputs.version }}') { $v='${{ inputs.version }}' }
+          "VERSION=$v" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Build EXE
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --clean --onefile --windowed --name MacTrix --icon assets/mactrix.ico --paths src run.py
+      - name: Smoke test packaged app
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath .\dist\MacTrix.exe -ArgumentList '--smoke-test' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Packaged smoke test failed: $($p.ExitCode)" }
+      - name: Package
+        shell: pwsh
+        run: |
+          $dir = "MacTrix-$env:VERSION-Windows-x64"
+          New-Item -ItemType Directory -Force $dir | Out-Null
+          Copy-Item .\dist\MacTrix.exe "$dir\MacTrix.exe"
+          Copy-Item README.md,CHANGELOG.md,SECURITY.md "$dir\"
+          Compress-Archive -Path "$dir\*" -DestinationPath "$dir.zip" -Force
+          (Get-FileHash .\dist\MacTrix.exe -Algorithm SHA256).Hash.ToLower() + "  MacTrix.exe" | Set-Content "MacTrix.exe.sha256"
+          (Get-FileHash "$dir.zip" -Algorithm SHA256).Hash.ToLower() + "  $dir.zip" | Set-Content "$dir.zip.sha256"
+          "ZIP_NAME=$dir.zip" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if (gh release view $env:VERSION --repo "${{ github.repository }}" 2>$null) {
+            gh release upload $env:VERSION .\dist\MacTrix.exe MacTrix.exe.sha256 $env:ZIP_NAME "$env:ZIP_NAME.sha256" --clobber --repo "${{ github.repository }}"
+          } else {
+            gh release create $env:VERSION .\dist\MacTrix.exe MacTrix.exe.sha256 $env:ZIP_NAME "$env:ZIP_NAME.sha256" --target "${{ github.sha }}" --title "MacTrix $env:VERSION" --generate-notes --repo "${{ github.repository }}"
+          }
