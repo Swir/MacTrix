@@ -5,7 +5,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "assets" / "mactrix.ico"
+ICO_OUTPUT = ROOT / "assets" / "mactrix.ico"
+PNG_OUTPUT = ROOT / "assets" / "mactrix_icon.png"
 
 
 def build(size: int = 512) -> Image.Image:
@@ -16,7 +17,13 @@ def build(size: int = 512) -> Image.Image:
     def box(values):
         return tuple(int(value * scale) for value in values)
 
-    draw.rounded_rectangle(box((20, 20, 492, 492)), radius=int(108 * scale), fill=(7, 17, 31, 255), outline=(20, 121, 214, 255), width=max(2, int(6 * scale)))
+    draw.rounded_rectangle(
+        box((20, 20, 492, 492)),
+        radius=int(108 * scale),
+        fill=(7, 17, 31, 255),
+        outline=(20, 121, 214, 255),
+        width=max(2, int(6 * scale)),
+    )
 
     for pos in (120, 196, 272, 348):
         draw.line((int(76 * scale), int(pos * scale), int(436 * scale), int(pos * scale)), fill=(16, 57, 93, 170), width=max(1, int(4 * scale)))
@@ -38,10 +45,16 @@ def build(size: int = 512) -> Image.Image:
 
 
 def main() -> None:
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    ICO_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     image = build()
-    image.save(OUTPUT, format="ICO", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
-    print(f"Wrote {OUTPUT}")
+    image.save(PNG_OUTPUT, format="PNG")
+    image.save(
+        ICO_OUTPUT,
+        format="ICO",
+        sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)],
+    )
+    print(f"Wrote {PNG_OUTPUT}")
+    print(f"Wrote {ICO_OUTPUT}")
 
 
 if __name__ == "__main__":

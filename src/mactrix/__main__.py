@@ -24,16 +24,48 @@ def smoke_test() -> int:
     return 0
 
 
+def gui_smoke_test() -> int:
+    import tkinter as tk
+
+    from .app import MacTrixApp
+    from .logging_config import configure_logging
+    from .resources import apply_window_icon
+
+    root = tk.Tk()
+    root.withdraw()
+    try:
+        apply_window_icon(root)
+        MacTrixApp(root, configure_logging())
+        root.update_idletasks()
+        root.update()
+    finally:
+        try:
+            root.destroy()
+        except tk.TclError:
+            pass
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="MacTrix synthetic MAC address lab")
     parser.add_argument("--smoke-test", action="store_true", help="run a non-GUI packaged-app self test")
+    parser.add_argument("--smoke-gui", action="store_true", help="construct and process the real GUI once, then exit")
     args = parser.parse_args()
     if args.smoke_test:
         return smoke_test()
+    if args.smoke_gui:
+        return gui_smoke_test()
 
-    from .app import run
+    import tkinter as tk
 
-    run()
+    from .app import MacTrixApp
+    from .logging_config import configure_logging
+    from .resources import apply_window_icon
+
+    root = tk.Tk()
+    apply_window_icon(root)
+    MacTrixApp(root, configure_logging())
+    root.mainloop()
     return 0
 
 

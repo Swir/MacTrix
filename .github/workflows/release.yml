@@ -30,6 +30,8 @@ jobs:
         run: pytest
       - name: Build icon
         run: python tools/build_icon.py
+      - name: Source GUI smoke test
+        run: python -m mactrix --smoke-gui
       - name: Resolve version
         shell: pwsh
         run: |
@@ -39,12 +41,14 @@ jobs:
       - name: Build EXE
         shell: pwsh
         run: |
-          pyinstaller --noconfirm --clean --onefile --windowed --name MacTrix --icon assets/mactrix.ico --paths src run.py
+          pyinstaller --noconfirm --clean --onefile --windowed --name MacTrix --icon assets/mactrix.ico --add-data "assets/mactrix_icon.png;assets" --paths src run.py
       - name: Smoke test packaged app
         shell: pwsh
         run: |
           $p = Start-Process -FilePath .\dist\MacTrix.exe -ArgumentList '--smoke-test' -Wait -PassThru
           if ($p.ExitCode -ne 0) { throw "Packaged smoke test failed: $($p.ExitCode)" }
+          $g = Start-Process -FilePath .\dist\MacTrix.exe -ArgumentList '--smoke-gui' -Wait -PassThru
+          if ($g.ExitCode -ne 0) { throw "Packaged GUI smoke test failed: $($g.ExitCode)" }
       - name: Package
         shell: pwsh
         run: |
