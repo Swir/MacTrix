@@ -10,7 +10,7 @@ from .config import load_settings, save_settings
 from .generator import MAX_BATCH, PROFILES, generate_many, resolve_prefix
 from .i18n import detect_language, tr
 from .storage import load_addresses, save_addresses
-from .validation import analyze, canonicalize, is_valid
+from .validation import analyze, canonicalize
 
 PREVIEW_LIMIT = 5000
 LANGUAGE_LABELS = {"Auto": "auto", "English": "en", "Polski": "pl", "Norsk": "no"}
@@ -36,6 +36,7 @@ class MacTrixApp:
         self.uppercase_var = tk.BooleanVar(value=bool(self.settings.get("uppercase", True)))
         self.language_var = tk.StringVar(value=LANGUAGE_REVERSE.get(configured_language, "Auto"))
         self.status_var = tk.StringVar(value=tr(self.language, "status_ready"))
+        self.progress_percent_var = tk.StringVar(value="0%")
 
         self.root.title(tr(self.language, "title"))
         self.root.geometry("1080x720")
@@ -119,8 +120,10 @@ class MacTrixApp:
 
         self.about_label = ttk.Label(controls, style="Hint.TLabel", wraplength=1000)
         self.about_label.grid(row=2, column=0, columnspan=6, sticky="w", pady=(12, 0))
-        self.progress = ttk.Progressbar(controls, mode="indeterminate")
-        self.progress.grid(row=3, column=0, columnspan=6, sticky="ew", pady=(10, 0))
+        self.progress = ttk.Progressbar(controls, mode="determinate", maximum=100)
+        self.progress.grid(row=3, column=0, columnspan=5, sticky="ew", pady=(10, 0))
+        self.progress_percent = ttk.Label(controls, textvariable=self.progress_percent_var, style="Hint.TLabel", anchor="e", width=6)
+        self.progress_percent.grid(row=3, column=5, sticky="e", padx=(12, 0), pady=(10, 0))
 
         body = ttk.Frame(outer, style="Card.TFrame", padding=12)
         body.grid(row=2, column=0, sticky="nsew")
@@ -161,7 +164,7 @@ class MacTrixApp:
         footer.columnconfigure(0, weight=1)
         self.status_label = ttk.Label(footer, textvariable=self.status_var, style="Status.TLabel")
         self.status_label.grid(row=0, column=0, sticky="ew")
-        ttk.Label(footer, text="MacTrix v2.0.0  •  by Swir  •  github.com/Swir", style="Sub.TLabel").grid(row=0, column=1, padx=(12, 0))
+        ttk.Label(footer, text="MacTrix v2.1.0  •  by Swir  •  github.com/Swir", style="Sub.TLabel").grid(row=0, column=1, padx=(12, 0))
 
     def _apply_language(self) -> None:
         self.root.title(tr(self.language, "title"))
@@ -228,7 +231,12 @@ class MacTrixApp:
         separator, uppercase = self._format_options()
         profile = self._selected_profile_key()
         self.generate_button.state(["disabled"])
-        self.progress.start(12)
+        self.progress["value"] = 0
+        self.progress_percent_var.set("0%")
+
+        def report(done: int, total: int) -> None:
+            percent = int(done * 100 / total) if total else 0
+            self.root.after(0, lambda value=percent: self._update_progress(value))
 
         def worker() -> None:
             try:
@@ -238,6 +246,7 @@ class MacTrixApp:
                     custom_prefix=custom_prefix,
                     separator=separator,
                     uppercase=uppercase,
+                    progress=report,
                 )
             except Exception as exc:  # UI boundary
                 self.logger.exception("Generation failed")
@@ -247,14 +256,19 @@ class MacTrixApp:
 
         threading.Thread(target=worker, daemon=True).start()
 
+    def _update_progress(self, percent: int) -> None:
+        value = max(0, min(100, int(percent)))
+        self.progress["value"] = value
+        self.progress_percent_var.set(f"{value}%")
+
     def _generation_failed(self, error: str) -> None:
-        self.progress.stop()
         self.generate_button.state(["!disabled"])
+        self._update_progress(0)
         messagebox.showerror(tr(self.language, "title"), error, parent=self.root)
 
     def _generation_finished(self, addresses: list[str]) -> None:
-        self.progress.stop()
         self.generate_button.state(["!disabled"])
+        self._update_progress(100)
         self.addresses = addresses
         self._populate()
         self.status_var.set(tr(self.language, "status_generated", count=len(addresses)))
@@ -334,6 +348,7 @@ class MacTrixApp:
     def _clear(self) -> None:
         self.addresses.clear()
         self._populate()
+        self._update_progress(0)
         self.status_var.set(tr(self.language, "status_ready"))
 
     def _on_close(self) -> None:
@@ -355,7 +370,9 @@ class MacTrixApp:
 
 def run() -> None:
     from .logging_config import configure_logging
+    from .resources import apply_window_icon
 
     root = tk.Tk()
+    apply_window_icon(root)
     MacTrixApp(root, configure_logging())
     root.mainloop()
