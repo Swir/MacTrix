@@ -2,6 +2,23 @@
 
 All notable changes to MacTrix are documented here.
 
+## [2.1.0] - 2026-09-17
+
+### Restored
+- Determinate 0–100% generation progress from the original MacTrix workflow.
+- Visible progress percentage during generation while keeping generation off the UI thread.
+
+### Fixed
+- The application icon is now applied to the running Tk window when launched from source or from the packaged EXE.
+- PyInstaller now bundles the PNG runtime icon instead of only using an ICO for executable metadata.
+- Windows CI constructs and processes the real GUI, catching startup/resource errors that the old non-GUI smoke test could miss.
+- The release pipeline now smoke-tests both the source GUI and the packaged EXE GUI before publication.
+
+### Documentation
+- README now displays the custom MacTrix icon.
+- Added a classic-to-modern regression map confirming generation, profile selection, progress, load/save and sorting behavior.
+- Updated project layout and release verification instructions.
+
 ## [2.0.0] - 2026-09-17
 
 ### Added
