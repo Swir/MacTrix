@@ -24,6 +24,12 @@
 
 </div>
 
+## 📸 Screenshot
+
+![MacTrix application screenshot](docs/screenshots/application.jpg)
+
+Initial MAC Lab window on Windows.
+
 MacTrix 2 is a local desktop utility for generating, validating, importing and exporting **synthetic locally administered MAC addresses** for development, QA, documentation and authorized lab work. It does **not** change a network adapter's MAC address.
 
 <img width="100%" src="https://raw.githubusercontent.com/Swir/Swir/main/assets/power-divider-v4.svg" alt="SWIR electric divider" />
